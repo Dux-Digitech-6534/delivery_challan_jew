@@ -17,6 +17,9 @@ class DeliveryChallan(Document):
 		if self.docstatus == 0:
 			self.status = "Draft"
 
+		if self.company:
+			self.transit_warehouse = get_transit_warehouse(self.company)
+
 		for row in self.items:
 			self.set_missing_item_details(row)
 			self.set_row_defaults(row)
@@ -46,6 +49,10 @@ class DeliveryChallan(Document):
 	def validate_warehouses(self):
 		if not self.source_warehouse or not self.target_warehouse or not self.transit_warehouse:
 			frappe.throw(_("Source Warehouse, Target Warehouse, and Transit Warehouse are mandatory."))
+
+		expected_transit_warehouse = get_transit_warehouse(self.company)
+		if self.transit_warehouse != expected_transit_warehouse:
+			frappe.throw(_("Transit Warehouse is fixed as {0} for Company {1}.").format(expected_transit_warehouse, self.company))
 
 		for warehouse in (self.source_warehouse, self.target_warehouse, self.transit_warehouse):
 			self.validate_warehouse_company(warehouse)
@@ -108,7 +115,7 @@ class DeliveryChallan(Document):
 	def set_row_defaults(self, row):
 		row.source_warehouse = row.source_warehouse or self.source_warehouse
 		row.target_warehouse = row.target_warehouse or self.target_warehouse
-		row.transit_warehouse = row.transit_warehouse or self.transit_warehouse
+		row.transit_warehouse = self.transit_warehouse
 		row.project = row.project or self.project
 		row.received_qty = flt(row.received_qty)
 		row.pending_qty = flt(row.qty) - flt(row.received_qty)
@@ -300,6 +307,29 @@ def close_shortage(delivery_challan_name, closure_type, shortage_reason):
 	)
 
 	return {"stock_entry": stock_entry.name, "status": "Closed with Shortage"}
+
+
+@frappe.whitelist()
+def get_transit_warehouse(company):
+	if not company:
+		frappe.throw(_("Company is required to identify Transit Warehouse."))
+
+	warehouses = frappe.get_all(
+		"Warehouse",
+		filters={
+			"company": company,
+			"is_group": 0,
+			"warehouse_name": ["like", "%Transit%"],
+		},
+		pluck="name",
+		order_by="name asc",
+		limit=1,
+	)
+
+	if not warehouses:
+		frappe.throw(_("Create one non-group Transit Warehouse for Company {0}.").format(company))
+
+	return warehouses[0]
 
 
 def _get_submitted_challan(delivery_challan_name):

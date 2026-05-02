@@ -4,12 +4,15 @@
 frappe.ui.form.on("Delivery Challan", {
 	refresh(frm) {
 		frm.trigger("set_queries");
+		frm.trigger("set_fixed_transit_warehouse");
 		frm.trigger("set_primary_actions");
+		frm.trigger("toggle_sections");
 	},
 
 	company(frm) {
 		frm.trigger("set_queries");
 		clear_wrong_company_warehouses(frm);
+		frm.trigger("set_fixed_transit_warehouse");
 	},
 
 	source_warehouse(frm) {
@@ -58,10 +61,45 @@ frappe.ui.form.on("Delivery Challan", {
 	},
 
 	set_queries(frm) {
-		["source_warehouse", "target_warehouse", "transit_warehouse"].forEach((fieldname) => {
+		["source_warehouse", "target_warehouse"].forEach((fieldname) => {
 			frm.set_query(fieldname, () => get_warehouse_query(frm));
 			frm.set_query(fieldname, "items", () => get_warehouse_query(frm));
 		});
+	},
+
+	set_fixed_transit_warehouse(frm) {
+		if (!frm.doc.company) {
+			return;
+		}
+
+		frappe.call({
+			method:
+				"delivery_challan_custom.delivery_challan_custom.doctype.delivery_challan.delivery_challan.get_transit_warehouse",
+			args: { company: frm.doc.company },
+			callback(r) {
+				if (r.message && frm.doc.transit_warehouse !== r.message) {
+					frm.set_value("transit_warehouse", r.message);
+				}
+			},
+		});
+	},
+
+	toggle_sections(frm) {
+		const has_dispatch = Boolean(frm.doc.dispatch_stock_entry || frm.doc.dispatch_datetime || frm.doc.dispatched_by);
+		const has_receipt = Boolean(frm.doc.receipt_stock_entries || frm.doc.receipt_datetime || frm.doc.received_by);
+		const has_shortage = Boolean(frm.doc.shortage_stock_entry || frm.doc.shortage_reason || frm.doc.status === "Partially Received");
+
+		frm.toggle_display("stock_entry_section", has_dispatch || has_receipt || has_shortage);
+		frm.toggle_display("dispatch_stock_entry", has_dispatch);
+		frm.toggle_display("dispatched_by", has_dispatch);
+		frm.toggle_display("dispatch_datetime", has_dispatch);
+		frm.toggle_display("receipt_stock_entries", has_receipt);
+		frm.toggle_display("received_by", has_receipt);
+		frm.toggle_display("receipt_datetime", has_receipt);
+		frm.toggle_display("shortage_section", has_shortage);
+		frm.toggle_display("shortage_stock_entry", has_shortage);
+		frm.toggle_display("shortage_closure_type", has_shortage);
+		frm.toggle_display("shortage_reason", has_shortage);
 	},
 });
 
@@ -114,15 +152,6 @@ function show_add_material_dialog(frm) {
 				get_query: () => get_warehouse_query(frm),
 				reqd: 1,
 			},
-			{
-				fieldname: "transit_warehouse",
-				label: __("Transit Warehouse"),
-				fieldtype: "Link",
-				options: "Warehouse",
-				default: frm.doc.transit_warehouse,
-				get_query: () => get_warehouse_query(frm),
-				reqd: 1,
-			},
 			{ fieldname: "remarks", label: __("Remarks"), fieldtype: "Small Text" },
 		],
 		primary_action_label: __("Add"),
@@ -144,7 +173,7 @@ function show_add_material_dialog(frm) {
 				row.pending_qty = values.qty;
 				row.source_warehouse = values.source_warehouse;
 				row.target_warehouse = values.target_warehouse;
-				row.transit_warehouse = values.transit_warehouse;
+				row.transit_warehouse = frm.doc.transit_warehouse;
 				row.project = frm.doc.project;
 				row.remarks = values.remarks;
 				row.row_status = "Pending";

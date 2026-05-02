@@ -32,6 +32,13 @@ Development site: `erp.jewonline.in`
   - Child table warehouse fields use the same company filter.
   - Add Material dialog warehouse fields use the same company filter.
   - Server-side validation blocks group warehouses and warehouses from another company.
+- Improved Delivery Challan form layout:
+  - Reorganized fields into clear operational sections.
+  - Added two-column layout for desktop/laptop users.
+  - Hid technical/default fields that users do not need to edit.
+  - Hid movement tracking and shortage fields until they are relevant.
+  - Made Transit Warehouse system-assigned instead of user-selected.
+  - Auto-selects the company's non-group Transit Warehouse, such as `Goods In Transit - JEWIPL`.
 - Added Frappe server workflow note:
   - Clear cache after changes.
   - Build assets after JS changes.
