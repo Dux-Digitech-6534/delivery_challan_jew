@@ -1,0 +1,392 @@
+{
+  "actions": [],
+  "allow_rename": 1,
+  "autoname": "naming_series:",
+  "creation": "2026-05-02 12:56:03.655291",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": [
+    "basic_section",
+    "company",
+    "posting_date",
+    "basic_column_break",
+    "status",
+    "naming_series",
+    "posting_time",
+    "movement_category",
+    "warehouse_section",
+    "source_warehouse",
+    "transit_warehouse",
+    "warehouse_column_break",
+    "target_warehouse",
+    "reference_section",
+    "project",
+    "cost_center",
+    "reference_column_break",
+    "remarks",
+    "vehicle_section",
+    "vehicle_no",
+    "driver_name",
+    "driver_mobile",
+    "vehicle_column_break",
+    "transporter",
+    "lr_no",
+    "address_section",
+    "dispatch_from_address",
+    "address_column_break",
+    "dispatch_to_address",
+    "items_section",
+    "items",
+    "stock_entry_section",
+    "dispatch_stock_entry",
+    "dispatched_by",
+    "dispatch_datetime",
+    "receipt_stock_entries",
+    "received_by",
+    "receipt_datetime",
+    "shortage_stock_entry",
+    "shortage_section",
+    "shortage_closure_type",
+    "shortage_reason",
+    "amended_from"
+  ],
+  "fields": [
+    {
+      "default": "DC-.YYYY.-.#####",
+      "fieldname": "naming_series",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "Naming Series",
+      "options": "DC-.YYYY.-.#####",
+      "reqd": 1,
+      "print_hide": 1,
+      "hidden": 1
+    },
+    {
+      "fieldname": "company",
+      "fieldtype": "Link",
+      "label": "Company",
+      "options": "Company",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "default": "Today",
+      "fieldname": "posting_date",
+      "fieldtype": "Date",
+      "label": "Posting Date",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "posting_time",
+      "fieldtype": "Time",
+      "label": "Posting Time",
+      "print_hide": 1,
+      "hidden": 1
+    },
+    {
+      "default": "Material",
+      "fieldname": "movement_category",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "Movement Category",
+      "options": "Material",
+      "reqd": 1,
+      "print_hide": 1,
+      "hidden": 1
+    },
+    {
+      "fieldname": "warehouse_section",
+      "fieldtype": "Section Break",
+      "label": "Warehouse Movement"
+    },
+    {
+      "fieldname": "source_warehouse",
+      "fieldtype": "Link",
+      "label": "Source Warehouse",
+      "options": "Warehouse",
+      "reqd": 1
+    },
+    {
+      "fieldname": "target_warehouse",
+      "fieldtype": "Link",
+      "label": "Target Warehouse",
+      "options": "Warehouse",
+      "reqd": 1
+    },
+    {
+      "fieldname": "transit_warehouse",
+      "fieldtype": "Link",
+      "label": "Transit Warehouse",
+      "options": "Warehouse",
+      "reqd": 1,
+      "description": "Auto-selected from the company Transit Warehouse. Users should not manually select this warehouse.",
+      "read_only": 1
+    },
+    {
+      "fieldname": "project",
+      "fieldtype": "Link",
+      "label": "Project",
+      "options": "Project"
+    },
+    {
+      "fieldname": "cost_center",
+      "fieldtype": "Link",
+      "label": "Cost Center",
+      "options": "Cost Center"
+    },
+    {
+      "fieldname": "vehicle_section",
+      "fieldtype": "Section Break",
+      "collapsible": 1,
+      "label": "Transport Details"
+    },
+    {
+      "fieldname": "vehicle_no",
+      "fieldtype": "Data",
+      "label": "Vehicle No"
+    },
+    {
+      "fieldname": "driver_name",
+      "fieldtype": "Data",
+      "label": "Driver Name"
+    },
+    {
+      "fieldname": "driver_mobile",
+      "fieldtype": "Data",
+      "label": "Driver Mobile"
+    },
+    {
+      "fieldname": "transporter",
+      "fieldtype": "Data",
+      "label": "Transporter"
+    },
+    {
+      "fieldname": "lr_no",
+      "fieldtype": "Data",
+      "label": "LR No"
+    },
+    {
+      "fieldname": "address_section",
+      "fieldtype": "Section Break",
+      "collapsible": 1,
+      "label": "Dispatch Addresses"
+    },
+    {
+      "fieldname": "dispatch_from_address",
+      "fieldtype": "Small Text",
+      "label": "Dispatch From Address"
+    },
+    {
+      "fieldname": "dispatch_to_address",
+      "fieldtype": "Small Text",
+      "label": "Dispatch To Address"
+    },
+    {
+      "fieldname": "status_section",
+      "fieldtype": "Section Break",
+      "label": "Status and Links"
+    },
+    {
+      "fieldname": "dispatched_by",
+      "fieldtype": "Link",
+      "label": "Dispatched By",
+      "options": "User",
+      "read_only": 1,
+      "depends_on": "eval:doc.dispatched_by"
+    },
+    {
+      "fieldname": "received_by",
+      "fieldtype": "Link",
+      "label": "Received By",
+      "options": "User",
+      "read_only": 1,
+      "depends_on": "eval:doc.received_by"
+    },
+    {
+      "fieldname": "dispatch_datetime",
+      "fieldtype": "Datetime",
+      "label": "Dispatch Datetime",
+      "read_only": 1,
+      "depends_on": "eval:doc.dispatch_datetime"
+    },
+    {
+      "fieldname": "receipt_datetime",
+      "fieldtype": "Datetime",
+      "label": "Receipt Datetime",
+      "read_only": 1,
+      "depends_on": "eval:doc.receipt_datetime"
+    },
+    {
+      "default": "Draft",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Draft\nPending Dispatch\nIn Transit\nPartially Received\nReceived\nClosed with Shortage\nCancelled",
+      "in_list_view": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "stock_entry_section",
+      "fieldtype": "Section Break",
+      "collapsible": 1,
+      "label": "Movement Tracking",
+      "depends_on": "eval:doc.dispatch_stock_entry || doc.receipt_stock_entries || doc.shortage_stock_entry"
+    },
+    {
+      "fieldname": "dispatch_stock_entry",
+      "fieldtype": "Link",
+      "label": "Dispatch Stock Entry",
+      "options": "Stock Entry",
+      "read_only": 1,
+      "depends_on": "eval:doc.dispatch_stock_entry"
+    },
+    {
+      "fieldname": "receipt_stock_entries",
+      "fieldtype": "Small Text",
+      "label": "Receipt Stock Entries",
+      "read_only": 1,
+      "depends_on": "eval:doc.receipt_stock_entries"
+    },
+    {
+      "fieldname": "shortage_stock_entry",
+      "fieldtype": "Link",
+      "label": "Shortage Stock Entry",
+      "options": "Stock Entry",
+      "read_only": 1,
+      "depends_on": "eval:doc.shortage_stock_entry"
+    },
+    {
+      "fieldname": "shortage_section",
+      "fieldtype": "Section Break",
+      "collapsible": 1,
+      "label": "Shortage Closure",
+      "depends_on": "eval:doc.shortage_stock_entry || doc.shortage_reason || doc.status == \"Partially Received\""
+    },
+    {
+      "fieldname": "shortage_closure_type",
+      "fieldtype": "Select",
+      "label": "Shortage Closure Type",
+      "options": "\nBook as Shortage / Loss\nReturn to Source Warehouse",
+      "depends_on": "eval:doc.shortage_stock_entry || doc.shortage_reason || doc.status == \"Partially Received\""
+    },
+    {
+      "fieldname": "shortage_reason",
+      "fieldtype": "Small Text",
+      "label": "Shortage Reason",
+      "depends_on": "eval:doc.shortage_stock_entry || doc.shortage_reason || doc.status == \"Partially Received\""
+    },
+    {
+      "fieldname": "remarks",
+      "fieldtype": "Small Text",
+      "label": "Remarks"
+    },
+    {
+      "fieldname": "items_section",
+      "fieldtype": "Section Break",
+      "label": "Material Items"
+    },
+    {
+      "fieldname": "items",
+      "fieldtype": "Table",
+      "label": "Items",
+      "options": "Delivery Challan Item",
+      "reqd": 1
+    },
+    {
+      "fieldname": "amended_from",
+      "fieldtype": "Link",
+      "label": "Amended From",
+      "no_copy": 1,
+      "options": "Delivery Challan",
+      "read_only": 1,
+      "search_index": 1,
+      "print_hide": 1,
+      "hidden": 1
+    },
+    {
+      "fieldname": "basic_section",
+      "fieldtype": "Section Break",
+      "label": "Basic Details"
+    },
+    {
+      "fieldname": "basic_column_break",
+      "fieldtype": "Column Break",
+      "label": ""
+    },
+    {
+      "fieldname": "warehouse_column_break",
+      "fieldtype": "Column Break",
+      "label": ""
+    },
+    {
+      "fieldname": "reference_section",
+      "fieldtype": "Section Break",
+      "label": "Reference and Remarks"
+    },
+    {
+      "fieldname": "reference_column_break",
+      "fieldtype": "Column Break",
+      "label": ""
+    },
+    {
+      "fieldname": "vehicle_column_break",
+      "fieldtype": "Column Break",
+      "label": ""
+    },
+    {
+      "fieldname": "address_column_break",
+      "fieldtype": "Column Break",
+      "label": ""
+    }
+  ],
+  "grid_page_length": 50,
+  "index_web_pages_for_search": 1,
+  "is_submittable": 1,
+  "links": [],
+  "modified": "2026-05-02 17:42:33.035211",
+  "modified_by": "Administrator",
+  "module": "Delivery Challan Custom",
+  "name": "Delivery Challan",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "amend": 1,
+      "cancel": 1,
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "submit": 1,
+      "write": 1
+    },
+    {
+      "amend": 1,
+      "cancel": 1,
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Stock Manager",
+      "share": 1,
+      "submit": 1,
+      "write": 1
+    }
+  ],
+  "row_format": "Dynamic",
+  "rows_threshold_for_grid_search": 20,
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
+}
